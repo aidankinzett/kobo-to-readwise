@@ -1,5 +1,4 @@
-import sqlite3 from 'sqlite3'
-import { open } from 'sqlite'
+import sqlite3 from 'better-sqlite3'
 
 import * as fs from 'fs';
 import * as path from 'path';
@@ -15,21 +14,16 @@ const __dirname = dirname(__filename);
 // if necessary, change this to the path to your Kobo device. Do not use a trailing slash.
 const koboPath = '/Volumes/KOBOeReader';
 
-
-
 // First, grab highlights from the sqlite DB
 // This format is more annoying re: position in book, but more universal
-const db = await open({
-    filename: path.join(koboPath, '.kobo','KoboReader.sqlite'),
-    driver: sqlite3.Database
-})
+const db = new sqlite3(path.join(koboPath, '.kobo','KoboReader.sqlite'));
 
-const bookmarks = await db.all(`SELECT b.Text as highlight, b.startContainerPath, b.DateCreated as date, b.Annotation as note, book.Title as title, book.Attribution as author 
+const bookmarks = await db.prepare(`SELECT b.Text as highlight, b.startContainerPath, b.DateCreated as date, b.Annotation as note, book.Title as title, book.Attribution as author 
     FROM Bookmark b 
     INNER JOIN content book ON book.ContentID = b.VolumeID
     WHERE highlight IS NOT NULL
     ORDER BY title, date
-    `);
+    `).all();
 
 
 
