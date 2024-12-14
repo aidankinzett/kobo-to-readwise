@@ -24,13 +24,6 @@ export const useKoboDevices = () => {
   return useQuery({
     queryKey: ["koboDevices"],
     queryFn: fetchKoboDevices,
-    // poll every second to check if devices are connected
     refetchInterval: 5000,
-    // dont constantly retry if we fail to get devices
-    retryDelay: 5000,
-    // stop polling when we have devices
-    enabled: (query) => (query.state.data?.length ?? 0) === 0,
-    // don't retry if we fail to get devices
-    retry: false,
   });
 };
