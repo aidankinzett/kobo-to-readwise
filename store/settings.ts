@@ -45,6 +45,6 @@ export const useSettings = create<Settings>()(
           await store.save();
         },
       })),
-    }
-  )
+    },
+  ),
 );

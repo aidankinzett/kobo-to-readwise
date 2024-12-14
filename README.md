@@ -30,12 +30,14 @@ Before you begin, ensure you have installed:
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone <repository-url>
 cd <project-directory>
 ```
 
 2. Install dependencies:
+
 ```bash
 pnpm install
 ```

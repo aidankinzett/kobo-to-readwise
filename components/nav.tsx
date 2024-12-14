@@ -9,7 +9,7 @@ export function Nav() {
       <div className="container mx-auto p-4">
         <div className="flex flex-row justify-between items-center">
           <div className="flex items-center gap-2">
-            <Image 
+            <Image
               src="/icon.png"
               alt="Kobo to Readwise Logo"
               width={24}

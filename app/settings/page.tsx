@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { UpdateChecker } from '@/components/UpdateChecker';
+import { UpdateChecker } from "@/components/UpdateChecker";
 import { useReadwise } from "@/hooks/use-readwise";
 import { cn } from "@/lib/utils";
 import { AutoSelectOption, useSettings } from "@/store/settings";
@@ -62,7 +62,7 @@ export default function SettingsPage() {
               <div
                 className={cn(
                   "flex items-center gap-2",
-                  isSuccess ? "text-green-500" : "text-red-500"
+                  isSuccess ? "text-green-500" : "text-red-500",
                 )}
               >
                 {isSuccess ? (

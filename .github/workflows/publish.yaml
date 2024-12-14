@@ -1,4 +1,4 @@
-name: 'publish'
+name: "publish"
 
 on:
   workflow_dispatch:
@@ -14,14 +14,14 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: 'macos-latest' # for Arm based macs (M1 and above).
-            args: '--target aarch64-apple-darwin'
-          - platform: 'macos-latest' # for Intel based macs.
-            args: '--target x86_64-apple-darwin'
-          - platform: 'ubuntu-22.04'
-            args: ''
-          - platform: 'windows-latest'
-            args: ''
+          - platform: "macos-latest" # for Arm based macs (M1 and above).
+            args: "--target aarch64-apple-darwin"
+          - platform: "macos-latest" # for Intel based macs.
+            args: "--target x86_64-apple-darwin"
+          - platform: "ubuntu-22.04"
+            args: ""
+          - platform: "windows-latest"
+            args: ""
 
     runs-on: ${{ matrix.platform }}
     env:
@@ -36,7 +36,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
-      
+
       - name: Install pnpm
         run: npm install -g pnpm
 
@@ -44,7 +44,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-          cache: 'pnpm' # Set this to npm, yarn or pnpm.
+          cache: "pnpm" # Set this to npm, yarn or pnpm.
 
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable # Set this to dtolnay/rust-toolchain@nightly
@@ -55,7 +55,7 @@ jobs:
       - name: Rust cache
         uses: swatinem/rust-cache@v2
         with:
-          workspaces: './src-tauri -> target'
+          workspaces: "./src-tauri -> target"
 
       - name: install frontend dependencies
         # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
@@ -88,36 +88,8 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
-          releaseName: 'Kobo to Readwise v__VERSION__'
-          releaseBody: 'See the assets to download this version and install.'
+          releaseName: "Kobo to Readwise v__VERSION__"
+          releaseBody: "See the assets to download this version and install."
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
-
-      - name: Extract version
-        id: extract_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
-
-      - name: Generate latest.json
-        if: steps.tauri.outputs.release == 'true'
-        run: |
-          echo "Generating latest.json for Tauri updates."
-          echo '{
-            "version": "'${{ env.VERSION }}'",
-            "pub_date": "'$(date --iso-8601=seconds)'",
-            "platforms": {
-              "darwin-aarch64": "https://github.com/aidankinzett/kobo-to-readwise/releases/download/v${{ env.VERSION }}/Kobo.to.Readwise_${{ env.VERSION }}_aarch64.dmg",
-              "darwin-x64": "https://github.com/aidankinzett/kobo-to-readwise/releases/download/v${{ env.VERSION }}/Kobo.to.Readwise_${{ env.VERSION }}_x64.dmg",
-              "linux-x64": "https://github.com/aidankinzett/kobo-to-readwise/releases/download/v${{ env.VERSION }}/Kobo.to.Readwise_${{ env.VERSION }}_amd64.AppImage",
-              "linux-deb-x64": "https://github.com/aidankinzett/kobo-to-readwise/releases/download/v${{ env.VERSION }}/Kobo.to.Readwise_${{ env.VERSION }}_amd64.deb",
-              "linux-rpm-x64": "https://github.com/aidankinzett/kobo-to-readwise/releases/download/v${{ env.VERSION }}/Kobo.to.Readwise-${{ env.VERSION }}-1.x86_64.rpm",
-              "windows-msi-x64": "https://github.com/aidankinzett/kobo-to-readwise/releases/download/v${{ env.VERSION }}/Kobo.to.Readwise_${{ env.VERSION }}_x64_en-US.msi",
-              "windows-x64": "https://github.com/aidankinzett/kobo-to-readwise/releases/download/v${{ env.VERSION }}/Kobo.to.Readwise_${{ env.VERSION }}_x64-setup.exe"
-            }
-          }' > latest.json
-
-      - name: Upload latest.json to release
-        uses: actions/upload-artifact@v4
-        with:
-          name: latest.json
-          path: ./latest.json

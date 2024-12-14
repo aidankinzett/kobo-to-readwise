@@ -45,7 +45,7 @@ export default function ExportPage() {
         {
           devicePath: device.path,
           bookIds: Array.from(selectedBooks),
-        }
+        },
       );
 
       // Convert to Readwise format

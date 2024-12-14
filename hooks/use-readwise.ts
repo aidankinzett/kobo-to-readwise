@@ -141,7 +141,7 @@ export const useReadwise = () => {
     onSuccess: (data) => {
       const numHighlights = sumBy(
         data.data,
-        (book) => book.modified_highlights.length
+        (book) => book.modified_highlights.length,
       );
 
       if (numHighlights === 0) {
