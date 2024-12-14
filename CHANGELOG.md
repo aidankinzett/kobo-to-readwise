@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4](https://github.com/aidankinzett/kobo-to-readwise/compare/v0.1.3...v0.1.4) (2024-12-14)
+
+
+### Features
+
+* add github publishing ([172b741](https://github.com/aidankinzett/kobo-to-readwise/commit/172b741f05750cc7c881c6ba779e1ce02a5d49fe))
+
 ### [0.1.3](https://github.com/aidankinzett/kobo-to-readwise/compare/v0.1.2...v0.1.3) (2024-12-14)
 
 
