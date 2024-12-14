@@ -1,6 +1,7 @@
 import { useSettings } from "@/store/settings";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { sumBy } from "lodash";
 import { useMemo } from "react";
 import { useToast } from "./use-toast";
 
@@ -89,6 +90,21 @@ interface ReadwiseHighlight {
   highlight_url?: string;
 }
 
+interface ReadwiseHighlightResponse {
+  id: number;
+  title: string;
+  author: string;
+  category: string;
+  source: string;
+  num_highlights: number;
+  last_highlight_at: string | null;
+  updated: string;
+  cover_image_url: string;
+  highlights_url: string;
+  source_url: string | null;
+  modified_highlights: number[];
+}
+
 export const useReadwise = () => {
   const { readwiseApiKey } = useSettings();
 
@@ -118,17 +134,32 @@ export const useReadwise = () => {
   const highlightsMutation = useMutation({
     mutationFn: async (highlights: ReadwiseHighlight[]) => {
       if (!client) throw new Error("Client not initialized");
-      return client.post("/v2/highlights/", { highlights });
+      return client.post<ReadwiseHighlightResponse[]>("/v2/highlights/", {
+        highlights,
+      });
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      const numHighlights = sumBy(
+        data.data,
+        (book) => book.modified_highlights.length
+      );
+
+      if (numHighlights === 0) {
+        toast({
+          title: "No highlights were added",
+          variant: "default",
+        });
+        return;
+      }
+
       toast({
-        title: "Highlights uploaded successfully",
+        title: `${numHighlights} highlights added successfully`,
         variant: "default",
       });
     },
     onError: () => {
       toast({
-        title: "Failed to upload highlights",
+        title: "Failed to add highlights",
         variant: "destructive",
       });
     },
