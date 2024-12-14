@@ -84,10 +84,40 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           APPLE_SIGNING_IDENTITY: ${{ env.CERT_ID }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
-          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
-          releaseName: 'App v__VERSION__'
+          tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
+          releaseName: 'Kobo to Readwise v__VERSION__'
           releaseBody: 'See the assets to download this version and install.'
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
+
+      - name: Extract version
+        id: extract_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+
+      - name: Generate latest.json
+        if: steps.tauri.outputs.release == 'true'
+        run: |
+          echo "Generating latest.json for Tauri updates."
+          echo '{
+            "version": "'${{ env.VERSION }}'",
+            "pub_date": "'$(date --iso-8601=seconds)'",
+            "platforms": {
+              "darwin-aarch64": "https://github.com/aidankinzett/kobo-to-readwise/releases/download/v${{ env.VERSION }}/Kobo.to.Readwise_${{ env.VERSION }}_aarch64.dmg",
+              "darwin-x64": "https://github.com/aidankinzett/kobo-to-readwise/releases/download/v${{ env.VERSION }}/Kobo.to.Readwise_${{ env.VERSION }}_x64.dmg",
+              "linux-x64": "https://github.com/aidankinzett/kobo-to-readwise/releases/download/v${{ env.VERSION }}/Kobo.to.Readwise_${{ env.VERSION }}_amd64.AppImage",
+              "linux-deb-x64": "https://github.com/aidankinzett/kobo-to-readwise/releases/download/v${{ env.VERSION }}/Kobo.to.Readwise_${{ env.VERSION }}_amd64.deb",
+              "linux-rpm-x64": "https://github.com/aidankinzett/kobo-to-readwise/releases/download/v${{ env.VERSION }}/Kobo.to.Readwise-${{ env.VERSION }}-1.x86_64.rpm",
+              "windows-msi-x64": "https://github.com/aidankinzett/kobo-to-readwise/releases/download/v${{ env.VERSION }}/Kobo.to.Readwise_${{ env.VERSION }}_x64_en-US.msi",
+              "windows-x64": "https://github.com/aidankinzett/kobo-to-readwise/releases/download/v${{ env.VERSION }}/Kobo.to.Readwise_${{ env.VERSION }}_x64-setup.exe"
+            }
+          }' > latest.json
+
+      - name: Upload latest.json to release
+        uses: actions/upload-artifact@v4
+        with:
+          name: latest.json
+          path: ./latest.json

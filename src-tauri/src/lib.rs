@@ -6,6 +6,8 @@ use std::path::PathBuf;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_fs::init())
@@ -20,7 +22,11 @@ pub fn run() {
             }
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![get_kobo_devices, get_kobo_books, get_book_highlights])
+        .invoke_handler(tauri::generate_handler![
+            get_kobo_devices,
+            get_kobo_books,
+            get_book_highlights
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
@@ -175,21 +181,24 @@ fn get_books_from_device(device_path: &str) -> Result<Vec<KoboBook>, Box<dyn Err
 }
 
 #[tauri::command]
-fn get_book_highlights(device_path: String, book_ids: Vec<String>) -> Result<Vec<KoboHighlight>, String> {
+fn get_book_highlights(
+    device_path: String,
+    book_ids: Vec<String>,
+) -> Result<Vec<KoboHighlight>, String> {
     get_highlights_from_device(&device_path, &book_ids).map_err(|e| e.to_string())
 }
 
 fn calculate_location(content_id: &str, chapter_progress: f64) -> i32 {
     // Strip everything after # if present
     let clean_content_id = content_id.split('#').next().unwrap_or(content_id);
-    
+
     // Extract chapter number from various possible formats
     let chapter_num = clean_content_id
-        .split(|c| c == '/' || c == '!')  // Split on both / and !
+        .split(|c| c == '/' || c == '!') // Split on both / and !
         .find(|s| {
-            s.contains("part") || 
-            s.contains("chapter") ||
-            (s.ends_with(".xhtml") && s.contains(char::is_numeric))
+            s.contains("part")
+                || s.contains("chapter")
+                || (s.ends_with(".xhtml") && s.contains(char::is_numeric))
         })
         .and_then(|s| {
             // Try to extract number from different formats:
@@ -202,13 +211,13 @@ fn calculate_location(content_id: &str, chapter_progress: f64) -> i32 {
                 .ok()
         })
         .unwrap_or(0);
-    
+
     // Format as "CCCCPPPP" where:
     // - CCCC is the chapter number (left-padded with zeros)
     // - PPPP is the progress percentage (0-9999)
     let chapter_str = format!("{:04}", chapter_num);
     let progress_str = format!("{:04}", (chapter_progress * 10000.0) as i32);
-    
+
     // Combine them and parse back to integer
     format!("{}{}", chapter_str, progress_str)
         .parse::<i32>()
@@ -219,9 +228,7 @@ fn get_header_level(note: &Option<String>) -> i32 {
     note.as_ref()
         .and_then(|n| {
             if n.starts_with(".h") {
-                n.trim_start_matches(".h")
-                    .parse::<i32>()
-                    .ok()
+                n.trim_start_matches(".h").parse::<i32>().ok()
             } else {
                 None
             }
@@ -229,22 +236,25 @@ fn get_header_level(note: &Option<String>) -> i32 {
         .unwrap_or(99) // Non-header notes sort after headers
 }
 
-fn get_highlights_from_device(device_path: &str, book_ids: &[String]) -> Result<Vec<KoboHighlight>, Box<dyn Error>> {
-  let db_path = if device_path.ends_with(".sqlite") || device_path.ends_with(".db") {
-      device_path.to_string()
-  } else {
-      format!("{}/.kobo/KoboReader.sqlite", device_path)
-  };
+fn get_highlights_from_device(
+    device_path: &str,
+    book_ids: &[String],
+) -> Result<Vec<KoboHighlight>, Box<dyn Error>> {
+    let db_path = if device_path.ends_with(".sqlite") || device_path.ends_with(".db") {
+        device_path.to_string()
+    } else {
+        format!("{}/.kobo/KoboReader.sqlite", device_path)
+    };
 
-  let conn = Connection::open(&db_path)?;
+    let conn = Connection::open(&db_path)?;
 
-  let placeholders: Vec<String> = (0..book_ids.len())
-      .map(|i| format!("book.ContentID = ?{}", i + 1))
-      .collect();
+    let placeholders: Vec<String> = (0..book_ids.len())
+        .map(|i| format!("book.ContentID = ?{}", i + 1))
+        .collect();
 
-  // Simpler SQL query without REGEXP_REPLACE
-  let query = format!(
-      "SELECT 
+    // Simpler SQL query without REGEXP_REPLACE
+    let query = format!(
+        "SELECT 
           b.Text as highlight,
           b.Annotation as note,
           b.DateCreated as date,
@@ -258,55 +268,55 @@ fn get_highlights_from_device(device_path: &str, book_ids: &[String]) -> Result<
        WHERE ({}) 
        AND (b.Text IS NOT NULL OR b.Annotation IS NOT NULL)
        AND b.Type IN ('highlight', 'note')",
-      placeholders.join(" OR ")
-  );
+        placeholders.join(" OR ")
+    );
 
-  let mut stmt = conn.prepare(&query)?;
-  let params: Vec<&str> = book_ids.iter().map(|s| s.as_str()).collect();
+    let mut stmt = conn.prepare(&query)?;
+    let params: Vec<&str> = book_ids.iter().map(|s| s.as_str()).collect();
 
-  let highlights = stmt.query_map(rusqlite::params_from_iter(params), |row| {
-      let content_id: String = row.get(3)?;
-      let progress: f64 = row.get(4)?;
-      let location = calculate_location(&content_id, progress);
+    let highlights = stmt.query_map(rusqlite::params_from_iter(params), |row| {
+        let content_id: String = row.get(3)?;
+        let progress: f64 = row.get(4)?;
+        let location = calculate_location(&content_id, progress);
 
-      Ok(KoboHighlight {
-          text: row.get(0)?,
-          title: row.get(6)?,
-          author: row.get(7)?,
-          note: row.get(1)?,
-          date: row.get(2)?,
-          location: Some(location),
-      })
-  })?;
+        Ok(KoboHighlight {
+            text: row.get(0)?,
+            title: row.get(6)?,
+            author: row.get(7)?,
+            note: row.get(1)?,
+            date: row.get(2)?,
+            location: Some(location),
+        })
+    })?;
 
-  let mut highlights: Vec<KoboHighlight> = highlights.filter_map(Result::ok).collect();
-  
-  // Sort by location, then header level, then date
-  highlights.sort_by(|a, b| {
-      match (a.location, b.location) {
-          (Some(loc_a), Some(loc_b)) => {
-              if loc_a == loc_b {
-                  // If locations are the same, check header levels
-                  let header_level_a = get_header_level(&a.note);
-                  let header_level_b = get_header_level(&b.note);
-                  
-                  if header_level_a != header_level_b {
-                      // Lower header numbers come first
-                      header_level_a.cmp(&header_level_b)
-                  } else {
-                      // If header levels are the same (or both non-headers), sort by date
-                      a.date.cmp(&b.date)
-                  }
-              } else {
-                  loc_a.cmp(&loc_b)
-              }
-          },
-          // Handle cases where location might be None
-          (None, None) => a.date.cmp(&b.date),
-          (Some(_), None) => std::cmp::Ordering::Less,
-          (None, Some(_)) => std::cmp::Ordering::Greater,
-      }
-  });
+    let mut highlights: Vec<KoboHighlight> = highlights.filter_map(Result::ok).collect();
 
-  Ok(highlights)
+    // Sort by location, then header level, then date
+    highlights.sort_by(|a, b| {
+        match (a.location, b.location) {
+            (Some(loc_a), Some(loc_b)) => {
+                if loc_a == loc_b {
+                    // If locations are the same, check header levels
+                    let header_level_a = get_header_level(&a.note);
+                    let header_level_b = get_header_level(&b.note);
+
+                    if header_level_a != header_level_b {
+                        // Lower header numbers come first
+                        header_level_a.cmp(&header_level_b)
+                    } else {
+                        // If header levels are the same (or both non-headers), sort by date
+                        a.date.cmp(&b.date)
+                    }
+                } else {
+                    loc_a.cmp(&loc_b)
+                }
+            }
+            // Handle cases where location might be None
+            (None, None) => a.date.cmp(&b.date),
+            (Some(_), None) => std::cmp::Ordering::Less,
+            (None, Some(_)) => std::cmp::Ordering::Greater,
+        }
+    });
+
+    Ok(highlights)
 }

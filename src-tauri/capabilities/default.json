@@ -12,6 +12,7 @@
     "fs:allow-appconfig-read",
     "fs:allow-appconfig-write",
     "store:default",
-    "shell:default"
+    "shell:default",
+    "process:default"
   ]
 }

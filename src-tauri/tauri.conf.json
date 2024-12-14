@@ -24,6 +24,7 @@
     }
   },
   "bundle": {
+    "createUpdaterArtifacts": true,
     "active": true,
     "targets": "all",
     "icon": [
@@ -33,5 +34,13 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ]
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDU1REVCQUU4RTRFODU0QkMKUldTOFZPams2THJlVmYwbkFxUGU2azZPRlpPZ0dQOWRDNlpyNk9PRjlPT3ZXWWtRWWl6a0JDaGYK",
+      "endpoints": [
+        "https://github.com/aidankinzett/kobo-to-readwise/releases/latest/download/latest.json"
+      ]
+    }
   }
 }
