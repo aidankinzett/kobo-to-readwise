@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.7](https://github.com/aidankinzett/kobo-to-readwise/compare/v0.1.6...v0.1.7) (2024-12-14)
+
+
+### Features
+
+* add config for macos app signing ([a3f872e](https://github.com/aidankinzett/kobo-to-readwise/commit/a3f872eef399f699074871a4e949d523b529c9d4))
+* add instructions for installing ([bd5d6c4](https://github.com/aidankinzett/kobo-to-readwise/commit/bd5d6c45661c1038bdaa29f062ee8de3ae531ffb))
+* chore add APPLE_TEAM_ID ([5fab09b](https://github.com/aidankinzett/kobo-to-readwise/commit/5fab09bfd9fdfb95e5a049bed3f7c33ca149658e))
+* crop app icon ([36cf2cb](https://github.com/aidankinzett/kobo-to-readwise/commit/36cf2cbe7f236aa7fa5455b1d66d7490301ff19f))
+
 ### [0.1.6](https://github.com/aidankinzett/kobo-to-readwise/compare/v0.1.5...v0.1.6) (2024-12-14)
 
 
