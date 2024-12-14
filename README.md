@@ -9,7 +9,13 @@ A desktop application built with Next.js and Tauri to upload your Kobo highlight
 - Upload your Kobo highlights to Readwise from a Kobo device or a sqlite database
 - Maintains your highlights order (as much as possible, if you have any issues, please let me know)
 
-## Prerequisites
+## Installation
+
+Go to the [releases](https://github.com/aidankinzett/kobo-to-readwise/releases) page to download the latest version for your platform.
+
+## Development
+
+### Prerequisites
 
 Before you begin, ensure you have installed:
 
@@ -21,7 +27,7 @@ Before you begin, ensure you have installed:
   - macOS: Xcode Command Line Tools
   - Linux: `build-essential` package
 
-## Installation
+### Installation
 
 1. Clone the repository:
 ```bash
@@ -34,7 +40,7 @@ cd <project-directory>
 pnpm install
 ```
 
-## Development
+### Development
 
 Run the development server:
 
@@ -43,7 +49,7 @@ Run the development server:
 pnpm run desktop:dev
 ```
 
-## Building
+### Building
 
 Create a production build:
 
@@ -54,7 +60,7 @@ pnpm tauri build
 
 The built applications will be available in the `src-tauri/target/release` directory.
 
-## Project Structure
+### Project Structure
 
 ```
 ├── src-tauri/          # Rust-based Tauri backend
@@ -66,7 +72,7 @@ The built applications will be available in the `src-tauri/target/release` direc
 └── store/            # State management
 ```
 
-## Contributing
+### Contributing
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
