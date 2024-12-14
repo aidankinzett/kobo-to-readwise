@@ -60,7 +60,8 @@
   },
   "standard-version": {
     "scripts": {
-      "postbump": "node scripts/update-tauri-version.js && git add src-tauri/tauri.conf.json"
+      "postbump": "node scripts/update-tauri-version.js && git add src-tauri/tauri.conf.json",
+      "precommit": "git add src-tauri/tauri.conf.json"
     }
   }
 }
