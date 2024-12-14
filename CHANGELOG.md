@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.12](https://github.com/aidankinzett/kobo-to-readwise/compare/v0.1.11...v0.1.12) (2024-12-14)
+
+
+### Features
+
+* add modal alerting user that they need to add an API key ([a0bc86d](https://github.com/aidankinzett/kobo-to-readwise/commit/a0bc86d526529c6a43f45af1c163fd7d9072abc3))
+
+
+### Bug Fixes
+
+* fix issue with checking for updates ([2333ed2](https://github.com/aidankinzett/kobo-to-readwise/commit/2333ed2de32f1ff4e1d14e3671557aa36d5a3eb8))
+* fix update checker ([1588eb4](https://github.com/aidankinzett/kobo-to-readwise/commit/1588eb43e6776a6680304285770e090fca72a621))
+
 ### [0.1.11](https://github.com/aidankinzett/kobo-to-readwise/compare/v0.1.10...v0.1.11) (2024-12-14)
 
 
