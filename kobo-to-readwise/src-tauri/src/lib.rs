@@ -215,6 +215,20 @@ fn calculate_location(content_id: &str, chapter_progress: f64) -> i32 {
         .unwrap_or(0)
 }
 
+fn get_header_level(note: &Option<String>) -> i32 {
+    note.as_ref()
+        .and_then(|n| {
+            if n.starts_with(".h") {
+                n.trim_start_matches(".h")
+                    .parse::<i32>()
+                    .ok()
+            } else {
+                None
+            }
+        })
+        .unwrap_or(99) // Non-header notes sort after headers
+}
+
 fn get_highlights_from_device(device_path: &str, book_ids: &[String]) -> Result<Vec<KoboHighlight>, Box<dyn Error>> {
   let db_path = if device_path.ends_with(".sqlite") || device_path.ends_with(".db") {
       device_path.to_string()
@@ -267,13 +281,22 @@ fn get_highlights_from_device(device_path: &str, book_ids: &[String]) -> Result<
 
   let mut highlights: Vec<KoboHighlight> = highlights.filter_map(Result::ok).collect();
   
-  // Sort by location first, then by date for same locations
+  // Sort by location, then header level, then date
   highlights.sort_by(|a, b| {
       match (a.location, b.location) {
           (Some(loc_a), Some(loc_b)) => {
               if loc_a == loc_b {
-                  // If locations are the same, sort by date
-                  a.date.cmp(&b.date)
+                  // If locations are the same, check header levels
+                  let header_level_a = get_header_level(&a.note);
+                  let header_level_b = get_header_level(&b.note);
+                  
+                  if header_level_a != header_level_b {
+                      // Lower header numbers come first
+                      header_level_a.cmp(&header_level_b)
+                  } else {
+                      // If header levels are the same (or both non-headers), sort by date
+                      a.date.cmp(&b.date)
+                  }
               } else {
                   loc_a.cmp(&loc_b)
               }
