@@ -4,11 +4,9 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  webpack: (config) => {
-    config.resolve.alias.fs = false;
-    config.resolve.alias.path = false;
-    config.resolve.alias.crypto = false;
-    return config;
+  // Add this to handle location references better in static builds
+  experimental: {
+    appDocumentPreloading: false,
   },
 };
 

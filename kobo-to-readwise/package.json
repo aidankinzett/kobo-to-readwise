@@ -10,8 +10,7 @@
     "start": "next start",
     "desktop:dev": "cross-env RUST_LOG=debug tauri dev",
     "desktop:build": "tauri build",
-    "lint": "next lint",
-    "prepare": "node scripts/copy-wasm.js"
+    "lint": "next lint"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.1.3",
@@ -26,22 +25,16 @@
     "@tauri-apps/plugin-shell": "~2",
     "@tauri-apps/plugin-store": "~2",
     "@trivago/prettier-plugin-sort-imports": "^5.2.0",
-    "@types/file-saver": "^2.0.7",
-    "@types/sql.js": "^1.4.9",
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "file-saver": "^2.0.5",
     "lucide-react": "^0.468.0",
-    "moment": "^2.30.1",
     "next": "15.1.0",
     "prettier": "^3.4.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "sql.js": "^1.12.0",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
-    "xml-js": "^1.6.11",
     "zustand": "^5.0.2"
   },
   "devDependencies": {
