@@ -24,6 +24,6 @@ export const useKoboDevices = () => {
   return useQuery({
     queryKey: ["koboDevices"],
     queryFn: fetchKoboDevices,
-    refetchInterval: 5000,
+    retryDelay: 5000,
   });
 };
