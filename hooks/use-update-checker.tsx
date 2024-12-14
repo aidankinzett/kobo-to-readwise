@@ -25,7 +25,7 @@ export function useUpdateChecker() {
 
       if (update) {
         console.log(
-          `found update ${update.version} from ${update.date} with notes ${update.body}`
+          `found update ${update.version} from ${update.date} with notes ${update.body}`,
         );
 
         const updateToast = toast({
@@ -42,7 +42,7 @@ export function useUpdateChecker() {
             case "Started":
               contentLength = event.data.contentLength ?? 0;
               console.log(
-                `started downloading ${event.data.contentLength} bytes`
+                `started downloading ${event.data.contentLength} bytes`,
               );
               break;
             case "Progress":

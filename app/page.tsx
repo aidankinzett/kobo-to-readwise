@@ -24,7 +24,7 @@ export default function Home() {
       clearAll();
       router.push("/books");
     },
-    [setDevice, clearAll, router]
+    [setDevice, clearAll, router],
   );
 
   const handleFileSelect = useCallback(async () => {
