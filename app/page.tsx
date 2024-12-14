@@ -1,5 +1,6 @@
 "use client";
 
+import { ReadwiseKeyModal } from "@/components/ReadwiseKeyModal";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { KoboDevice, useKoboDevices } from "@/hooks/use-kobo-devices";
@@ -23,7 +24,7 @@ export default function Home() {
       clearAll();
       router.push("/books");
     },
-    [setDevice, clearAll, router],
+    [setDevice, clearAll, router]
   );
 
   const handleFileSelect = useCallback(async () => {
@@ -54,6 +55,7 @@ export default function Home() {
 
   return (
     <div className="space-y-4">
+      <ReadwiseKeyModal />
       <div className="flex flex-row justify-between items-center">
         <h2 className="text-xl font-semibold">Select your Kobo</h2>
         <Button variant="outline" onClick={() => refetch()}>
