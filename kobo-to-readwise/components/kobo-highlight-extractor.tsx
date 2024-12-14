@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useKoboDevice } from "@/hooks/use-kobo-device";
 import { useProcessHighlights } from "@/hooks/use-process-highlights";
 import { useHighlightsStore } from "@/store/highlights";
 import { ChangeEvent } from "react";
@@ -17,11 +18,19 @@ import { ChangeEvent } from "react";
 export function KoboHighlightExtractor() {
   const { dbFile, annotFiles, setDbFile, setAnnotFiles } = useHighlightsStore();
   const { mutate: processHighlights, isPending } = useProcessHighlights();
+  const { koboPath, selectKoboFile } = useKoboDevice();
 
   const handleProcess = () => {
     if (!dbFile) return;
 
     processHighlights({ dbFile, annotFiles });
+  };
+
+  const handleAutoDetect = async () => {
+    const file = await selectKoboFile();
+    if (file) {
+      setDbFile(file);
+    }
   };
 
   return (
@@ -36,15 +45,24 @@ export function KoboHighlightExtractor() {
         <div className="space-y-6">
           <div className="grid w-full items-center gap-2">
             <Label htmlFor="sqlite-file">KoboReader.sqlite file</Label>
-            <Input
-              id="sqlite-file"
-              type="file"
-              accept=".sqlite"
-              onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                setDbFile(e.target.files?.[0] || null);
-              }}
-              className="cursor-pointer w-full"
-            />
+            <div className="flex gap-2">
+              <Input
+                id="sqlite-file"
+                type="file"
+                accept=".sqlite"
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  setDbFile(e.target.files?.[0] || null);
+                }}
+                className="cursor-pointer w-full"
+              />
+              <Button
+                onClick={handleAutoDetect}
+                variant="outline"
+                disabled={!koboPath}
+              >
+                Auto-detect
+              </Button>
+            </div>
           </div>
 
           <div className="grid w-full items-center gap-2">
