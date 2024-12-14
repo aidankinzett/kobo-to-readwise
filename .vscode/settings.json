@@ -3,5 +3,6 @@
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit"
-  }
+  },
+  "rust-analyzer.linkedProjects": ["kobo-to-readwise/src-tauri/Cargo.toml"]
 }
