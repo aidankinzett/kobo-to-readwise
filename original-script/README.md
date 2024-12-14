@@ -23,4 +23,3 @@ Extract highlights from Kobo devices and put them into a CSV for Readwise
 
 ## Todo
 - [ ] specify input and output via command line arguments
-- [ ] skip CSV and send highlights directly to Readwise via API
