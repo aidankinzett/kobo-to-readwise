@@ -28,3 +28,4 @@ tauri-plugin-fs = "2"
 rusqlite = { version = "0.30.0", features = ["bundled"] }
 tauri-plugin-store = "2"
 tauri-plugin-shell = "2"
+regex = "1.10.3"
