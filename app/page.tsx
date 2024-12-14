@@ -105,7 +105,7 @@ export default function Home() {
 
       <div className="mt-8 pt-4 border-t">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-medium">Alternative Options</h3>
+          <h3 className="text-lg font-medium">Import from SQLite</h3>
         </div>
         <Button
           variant="outline"
