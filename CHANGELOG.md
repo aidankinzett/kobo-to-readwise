@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.2](https://github.com/aidankinzett/kobo-to-readwise/compare/v0.1.1...v0.1.2) (2024-12-14)
+
+
+### Features
+
+* add number of highlights to the success toast ([77c0be9](https://github.com/aidankinzett/kobo-to-readwise/commit/77c0be923021d3d7dcd8bcb9c29bf98352115064))
+
+
+### Bug Fixes
+
+* try to fix issue with detecting kobo devices ([12d27bf](https://github.com/aidankinzett/kobo-to-readwise/commit/12d27bfd35dbd8516fc369087c0718ab80f07b12))
+
 ### 0.1.1 (2024-12-14)
 
 
