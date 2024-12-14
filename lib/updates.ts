@@ -1,7 +1,14 @@
 import { relaunch } from '@tauri-apps/plugin-process';
 import { check } from '@tauri-apps/plugin-updater';
 
-export async function checkForUpdates() {
+export type UpdateStatus = {
+  available: boolean;
+  version?: string;
+  notes?: string;
+};
+
+export async function checkForUpdates(): Promise<UpdateStatus> {
+  try {
     const update = await check();
     if (update) {
       console.log(
@@ -9,7 +16,7 @@ export async function checkForUpdates() {
       );
       let downloaded = 0;
       let contentLength = 0;
-      // alternatively we could also call update.download() and update.install() separately
+      
       await update.downloadAndInstall((event) => {
         switch (event.event) {
           case 'Started':
@@ -28,5 +35,17 @@ export async function checkForUpdates() {
     
       console.log('update installed');
       await relaunch();
+      
+      return {
+        available: true,
+        version: update.version,
+        notes: update.body
+      };
     }
+    
+    return { available: false };
+  } catch (error) {
+    console.error('Error checking for updates:', error);
+    return { available: false };
+  }
 }

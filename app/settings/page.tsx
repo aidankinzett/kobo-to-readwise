@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { UpdateChecker } from '@/components/UpdateChecker';
 import { useReadwise } from "@/hooks/use-readwise";
 import { cn } from "@/lib/utils";
 import { AutoSelectOption, useSettings } from "@/store/settings";
@@ -104,6 +105,11 @@ export default function SettingsPage() {
             Choose which books should be automatically selected when viewing the
             books page.
           </p>
+        </div>
+
+        <div>
+          <h2 className="text-lg font-semibold mb-2">Updates</h2>
+          <UpdateChecker />
         </div>
       </div>
     </div>
