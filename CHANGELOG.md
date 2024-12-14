@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.9](https://github.com/aidankinzett/kobo-to-readwise/compare/v0.1.8...v0.1.9) (2024-12-14)
+
+
+### Features
+
+* change text on db file input ([9132c0c](https://github.com/aidankinzett/kobo-to-readwise/commit/9132c0c513317cd1c6f7e2d48242f43f6d87c8fd))
+
 ### [0.1.8](https://github.com/aidankinzett/kobo-to-readwise/compare/v0.1.7...v0.1.8) (2024-12-14)
 
 
